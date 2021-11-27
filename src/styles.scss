@@ -1,0 +1,13 @@
+/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+
+$typography: mat.define-typography-config(
+    $font-family: 'Quicksand'
+);
+
+
+@include mat.core($typography);
+
+html, body { height: 100%; font-size: 10px; }
+body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }

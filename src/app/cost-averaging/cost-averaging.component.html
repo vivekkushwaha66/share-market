@@ -1,0 +1,33 @@
+<mat-expansion-panel expanded>
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            Cost Averaging
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <form [formGroup]="caForm" autocomplete="off">
+        <ng-container formGroupName="stocks">
+            <ng-container *ngFor="let stock of stocks.controls; let i = index ">
+                <ng-container [formGroupName]="i">
+                    <div class="form-group">
+                        <span>{{ i + 1 }}.</span>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Units</mat-label>
+                            <input matInput min="0" placeholder="Units" formControlName="units" type="number">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Price</mat-label>
+                            <input min="0" matInput placeholder="Price" formControlName="price" type="number">
+                        </mat-form-field>
+                        <button mat-raised-button *ngIf="i !== (stocks.length - 1)" color="warn"
+                            (click)="removeStock(i)">Remove</button>
+                        <button mat-raised-button *ngIf="i === (stocks.length - 1)" color="primary"
+                            (click)="addStock(stocks)">Add</button>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </form>
+    <h1>
+        The average price is <strong>{{ averagePrice.toFixed(2) }}</strong>
+    </h1>
+</mat-expansion-panel>
