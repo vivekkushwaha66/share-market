@@ -1,10 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 interface Stock {
   units: number;
   price: number;
+  amount: number;
 }
 
 
@@ -13,10 +14,11 @@ interface Stock {
   templateUrl: './cost-averaging.component.html',
   styleUrls: ['./cost-averaging.component.scss']
 })
-export class CostAveragingComponent implements OnInit, OnDestroy {
+export class CostAveragingComponent implements OnInit, AfterViewInit, OnDestroy {
   caForm!: FormGroup;
   averagePrice = 0;
   priceChangeSub!: Subscription;
+  stockChanges: Subscription[] = []
 
   constructor(private fb: FormBuilder) {
     this.caForm = this.createForm();
@@ -32,6 +34,10 @@ export class CostAveragingComponent implements OnInit, OnDestroy {
     this.updateAveragePrice();
   }
 
+
+  ngAfterViewInit(): void {
+  }
+
   createForm() {
     return this.fb.group({
       stocks: new FormArray([])
@@ -41,8 +47,30 @@ export class CostAveragingComponent implements OnInit, OnDestroy {
   addStock(formArray: FormArray) {
     const stockFormGroup = new FormGroup({
       units: new FormControl(0, [Validators.min(0), Validators.required]),
-      price: new FormControl(0, [Validators.required, Validators.min(0)])
-    })
+      price: new FormControl(0, [Validators.required, Validators.min(0)]),
+      amount: new FormControl(0)
+    });
+    const unitControl = stockFormGroup.get('units');
+    const priceControl = stockFormGroup.get('price');
+    const amountControl = stockFormGroup.get('amount');
+    if (unitControl) {
+      this.stockChanges.push(unitControl.valueChanges.subscribe(unit => {
+        const price = priceControl?.value;
+        if (unit && price) {
+          const amount = Number((unit * price).toFixed(2));
+          amountControl?.setValue(amount);
+        }
+      }));
+    }
+    if (priceControl) {
+      this.stockChanges.push(priceControl.valueChanges.subscribe(price => {
+        const unit = unitControl?.value;
+        if (unit && price) {
+          const amount = Number((unit * price).toFixed(2));
+          amountControl?.setValue(amount);
+        }
+      }));
+    }
     formArray.push(stockFormGroup);
   }
 
@@ -54,6 +82,7 @@ export class CostAveragingComponent implements OnInit, OnDestroy {
       }, 0);
       const units = stocks.reduce((previous, currentStock) => previous += currentStock.units, 0);
       this.averagePrice = (sum / units);
+      if (isNaN(this.averagePrice)) this.averagePrice = 0
 
     })
   }
@@ -63,7 +92,10 @@ export class CostAveragingComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.priceChangeSub) this.priceChangeSub.unsubscribe()
+    if (this.priceChangeSub) this.priceChangeSub.unsubscribe();
+    this.stockChanges.forEach(x => {
+      if (x) x.unsubscribe();
+    })
   }
 
 }

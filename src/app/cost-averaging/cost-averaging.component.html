@@ -9,7 +9,14 @@
             <ng-container *ngFor="let stock of stocks.controls; let i = index ">
                 <ng-container [formGroupName]="i">
                     <div class="form-group">
-                        <span>{{ i + 1 }}.</span>
+                        <span>
+                            <mat-icon *ngIf="i !== (stocks.length - 1)" color="warn" (click)="removeStock(i)">
+                                remove_circle
+                            </mat-icon>
+                            <mat-icon *ngIf="i === (stocks.length - 1)" color="primary" (click)="addStock(stocks)">
+                                add_circle
+                            </mat-icon>
+                        </span>
                         <mat-form-field appearance="outline">
                             <mat-label>Units</mat-label>
                             <input matInput min="0" placeholder="Units" formControlName="units" type="number">
@@ -18,10 +25,11 @@
                             <mat-label>Price</mat-label>
                             <input min="0" matInput placeholder="Price" formControlName="price" type="number">
                         </mat-form-field>
-                        <button mat-raised-button *ngIf="i !== (stocks.length - 1)" color="warn"
-                            (click)="removeStock(i)">Remove</button>
-                        <button mat-raised-button *ngIf="i === (stocks.length - 1)" color="primary"
-                            (click)="addStock(stocks)">Add</button>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Amount</mat-label>
+                            <input min="0" matInput readonly placeholder="Amount" formControlName="amount"
+                                type="number">
+                        </mat-form-field>
                     </div>
                 </ng-container>
             </ng-container>
