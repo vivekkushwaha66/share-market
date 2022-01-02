@@ -11,3 +11,43 @@ $typography: mat.define-typography-config(
 
 html, body { height: 100%; font-size: 10px; }
 body { margin: 0; font-family: Quicksand, "Helvetica Neue", sans-serif; }
+
+
+/* ------------------ utils start----------------------*/
+
+$spacer : 0.25rem;
+
+@for $i from 1 through 10{
+    .m-#{$i}{
+      margin: $spacer * $i;  
+    }
+    .mr-#{$i}{
+      margin-right: $spacer * $i;  
+    }
+    .ml-#{$i}{
+      margin-left: $spacer * $i;  
+    }
+    .mt-#{$i}{
+      margin-top: $spacer * $i;  
+    }
+    .mb-#{$i}{
+      margin-bottom: $spacer * $i;  
+    }
+    .p-#{$i}{
+      padding: $spacer * $i;  
+    }
+    .pl-#{$i}{
+      padding-left: $spacer * $i;  
+    }
+    .pt-#{$i}{
+      padding-top: $spacer * $i;  
+    }
+    .pr-#{$i}{
+      padding-right: $spacer * $i;  
+    }
+    .pb-#{$i}{
+      padding-bottom: $spacer * $i;  
+    }
+}
+
+/*------------------------ utils end ------------------*/
