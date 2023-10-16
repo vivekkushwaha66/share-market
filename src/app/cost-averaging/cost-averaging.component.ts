@@ -17,6 +17,7 @@ interface Stock {
 export class CostAveragingComponent implements OnInit, AfterViewInit, OnDestroy {
   caForm!: FormGroup;
   averagePrice = 0;
+  totalInvestmentAmount = 0;
   priceChangeSub!: Subscription;
   stockChanges: Subscription[] = []
 
@@ -82,6 +83,7 @@ export class CostAveragingComponent implements OnInit, AfterViewInit, OnDestroy 
       }, 0);
       const units = stocks.reduce((previous, currentStock) => previous += currentStock.units, 0);
       this.averagePrice = (sum / units);
+      this.totalInvestmentAmount = sum;
       if (isNaN(this.averagePrice)) this.averagePrice = 0
 
     })
